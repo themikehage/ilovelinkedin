@@ -111,7 +111,7 @@ function PortfolioCard({ job, onCopy, onRefresh }: { job: Job; onCopy: (url: str
           <StatusBadge status={job.status} />
         </div>
 
-        {hasScrapedData && job.status !== 'PENDING' && (
+        {hasScrapedData && (
           <div className="mb-4 p-3 rounded-xl bg-[#FAF8F5] border border-[#E8E4DE] flex-1">
             {scrapedHeadline && (
               <p className="text-xs text-[var(--secondary)] mb-1.5 line-clamp-2 font-sans">
