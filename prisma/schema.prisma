@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Job {
+  id              String    @id @default(uuid())
+  userUuid        String    @map("user_uuid")
+  ipAddress       String?   @map("ip_address")
+  linkedinUrl     String    @map("linkedin_url")
+  theme           String
+  status          String    @default("PENDING")
+  scrapedData     Json?     @map("scraped_data")
+  githubRepoUrl   String?   @map("github_repo_url")
+  deployedUrl     String?   @map("deployed_url")
+  errorMessage    String?   @map("error_message")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  needsAiBuild    Boolean   @default(false) @map("needs_ai_build")
+
+  @@index([userUuid])
+  @@index([status])
+  @@index([createdAt])
+  @@map("jobs")
+}
