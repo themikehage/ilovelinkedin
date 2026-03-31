@@ -41,15 +41,16 @@ function getOrCreateUserUuid(): string {
 
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { color: string; bg: string; label: string }> = {
-    PENDING: { label: 'Pending', color: '#6B6B6B', bg: '#F5F5F5' },
+    PENDING_SCRAPE: { label: 'Queued', color: '#6B7280', bg: '#F3F4F6' },
     SCRAPING: { label: 'Scraping', color: '#2563EB', bg: '#EFF6FF' },
+    SCRAPED: { label: 'Scraped', color: '#0891B2', bg: '#ECFEFF' },
+    PENDING_BUILD: { label: 'Queued Build', color: '#7C3AED', bg: '#F5F3FF' },
     BUILDING: { label: 'Building', color: '#7C3AED', bg: '#F5F3FF' },
     DEPLOYING: { label: 'Deploying', color: '#C8963E', bg: '#FFFBEB' },
-    EVALUATING: { label: 'Evaluating', color: '#0891B2', bg: '#ECFEFF' },
     DONE: { label: 'Live', color: '#4A7C59', bg: '#F0FDF4' },
     FAILED: { label: 'Failed', color: '#C25450', bg: '#FEF2F2' },
   };
-  const c = config[status] || config.PENDING;
+  const c = config[status] || config.PENDING_SCRAPE;
   return (
     <span
       className={`status-badge ${!['DONE', 'FAILED'].includes(status) ? 'processing' : ''}`}

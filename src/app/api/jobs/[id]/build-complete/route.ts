@@ -49,7 +49,8 @@ export async function POST(
         deployedUrl,
         githubRepoUrl: githubRepoUrl || null,
         errorMessage: null,
-        needsAiBuild: false,
+        assignedAgent: null,
+        lockedAt: null,
       },
     });
 

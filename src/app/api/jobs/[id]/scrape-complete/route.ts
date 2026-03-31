@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { triggerWebBuilder } from '@/lib/hooks';
 
 interface ScrapeCompleteBody {
   jobId: string;
@@ -41,26 +40,20 @@ export async function POST(
       return NextResponse.json({ success: true, jobId, status: 'FAILED' });
     }
 
-    // Update job with scraped data, move to BUILDING
+    // Update job with scraped data, move to SCRAPED
+    // Orchestrator will pick this up and dispatch to web-builder
     await db.job.update({
       where: { id: jobId },
       data: {
-        status: 'BUILDING',
+        status: 'SCRAPED',
         scrapedData: scrapedData as object,
         errorMessage: null,
+        assignedAgent: null,
+        lockedAt: null,
       },
     });
 
-    // Trigger the web-builder agent
-    triggerWebBuilder(jobId).catch((err) => {
-      console.error('Failed to trigger web-builder:', err);
-      db.job.update({
-        where: { id: jobId },
-        data: { status: 'FAILED', errorMessage: 'Failed to trigger web-builder agent' },
-      }).catch(console.error);
-    });
-
-    return NextResponse.json({ success: true, jobId, status: 'BUILDING' });
+    return NextResponse.json({ success: true, jobId, status: 'SCRAPED' });
   } catch (error) {
     console.error('POST /api/jobs/[id]/scrape-complete error:', error);
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });

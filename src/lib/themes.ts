@@ -696,11 +696,12 @@ export const THEMES: Theme[] = [
 export const MAX_PORTFOLIOS_PER_USER = 5;
 
 export type JobStatus =
-  | 'PENDING'
+  | 'PENDING_SCRAPE'
   | 'SCRAPING'
+  | 'SCRAPED'
+  | 'PENDING_BUILD'
   | 'BUILDING'
   | 'DEPLOYING'
-  | 'EVALUATING'
   | 'DONE'
   | 'FAILED';
 
@@ -719,11 +720,12 @@ export interface Job {
 }
 
 export const STATUS_CONFIG: Record<JobStatus, { label: string; color: string; bg: string; icon: string }> = {
-  PENDING: { label: 'Pending', color: '#6B6B6B', bg: '#F5F5F5', icon: 'Clock' },
+  PENDING_SCRAPE: { label: 'Queued', color: '#6B7280', bg: '#F3F4F6', icon: 'Clock' },
   SCRAPING: { label: 'Scraping', color: '#2563EB', bg: '#EFF6FF', icon: 'Loader' },
+  SCRAPED: { label: 'Scraped', color: '#0891B2', bg: '#ECFEFF', icon: 'Check' },
+  PENDING_BUILD: { label: 'Queued Build', color: '#7C3AED', bg: '#F5F3FF', icon: 'Clock' },
   BUILDING: { label: 'Building', color: '#7C3AED', bg: '#F5F3FF', icon: 'Sparkles' },
   DEPLOYING: { label: 'Deploying', color: '#C8963E', bg: '#FFFBEB', icon: 'Rocket' },
-  EVALUATING: { label: 'Evaluating', color: '#0891B2', bg: '#ECFEFF', icon: 'Eye' },
   DONE: { label: 'Live', color: '#4A7C59', bg: '#F0FDF4', icon: 'Check' },
   FAILED: { label: 'Failed', color: '#C25450', bg: '#FEF2F2', icon: 'X' },
 };

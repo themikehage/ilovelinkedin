@@ -82,15 +82,14 @@ export async function POST(request: NextRequest) {
       || request.headers.get('x-real-ip') 
       || null;
 
-    // Create the job with SCRAPING status
+    // Create the job with PENDING_SCRAPE status (orchestrator picks it up)
     const job = await db.job.create({
       data: {
         userUuid,
         ipAddress: ip,
         linkedinUrl,
         theme,
-        status: 'SCRAPING',
-        needsAiBuild: true,
+        status: 'PENDING_SCRAPE',
       },
     });
 
