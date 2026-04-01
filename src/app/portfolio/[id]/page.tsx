@@ -12,9 +12,7 @@ import {
   Trash2,
   Check,
   Loader2,
-  Sparkles,
   AlertCircle,
-  ChevronDown
 } from 'lucide-react';
 
 function LinkedinIcon({ className = '' }: { className?: string }) {
@@ -95,9 +93,6 @@ export default function PortfolioDetailPage() {
   const [job, setJob] = useState<Job | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-  const [showThemeDropdown, setShowThemeDropdown] = useState(false);
-  const [selectedTheme, setSelectedTheme] = useState('');
-  const [isUpdatingTheme, setIsUpdatingTheme] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [userUuid, setUserUuid] = useState('');
@@ -117,7 +112,6 @@ export default function PortfolioDetailPage() {
       if (res.ok) {
         const data = await res.json();
         setJob(data.job);
-        setSelectedTheme(data.job.theme);
       }
     } catch (err) {
       console.error('Failed to fetch job:', err);
@@ -138,32 +132,6 @@ export default function PortfolioDetailPage() {
     const interval = setInterval(fetchJob, 5000);
     return () => clearInterval(interval);
   }, [job, fetchJob]);
-
-  const handleThemeChange = async (themeId: string) => {
-    setSelectedTheme(themeId);
-    setShowThemeDropdown(false);
-    setIsUpdatingTheme(true);
-
-    try {
-      const res = await fetch(`/api/jobs/${id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-uuid': userUuid,
-        },
-        body: JSON.stringify({ theme: themeId }),
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        setJob(data.job);
-      }
-    } catch (err) {
-      console.error('Failed to update theme:', err);
-    } finally {
-      setIsUpdatingTheme(false);
-    }
-  };
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -195,7 +163,6 @@ export default function PortfolioDetailPage() {
   };
 
   const theme = THEMES.find(t => t.id === job?.theme);
-  const currentTheme = THEMES.find(t => t.id === selectedTheme);
 
   if (isLoading) {
     return (
@@ -310,41 +277,6 @@ export default function PortfolioDetailPage() {
 
         {/* Actions */}
         <div className="flex flex-wrap items-center gap-3 mb-8 animate-fade-up" style={{ animationDelay: '0.1s' }}>
-          {/* Theme selector */}
-          <div className="relative">
-            <button
-              onClick={() => setShowThemeDropdown(!showThemeDropdown)}
-              disabled={job.status === 'FAILED'}
-              className="btn-secondary !py-2 !px-4 flex items-center gap-2"
-            >
-              {isUpdatingTheme ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Sparkles className="w-4 h-4" />
-              )}
-              <span className="text-sm">{currentTheme?.name || 'Theme'}</span>
-              <ChevronDown className={`w-4 h-4 transition-transform ${showThemeDropdown ? 'rotate-180' : ''}`} />
-            </button>
-
-            {showThemeDropdown && (
-              <div className="absolute top-full left-0 mt-2 w-80 bg-white rounded-2xl border border-[var(--border)] shadow-lg p-3 z-50">
-                <p className="text-xs font-semibold uppercase tracking-widest text-[var(--text-secondary)] mb-3 px-2">
-                  Change Theme
-                </p>
-                <div className="grid grid-cols-3 gap-2 max-h-[300px] overflow-y-auto">
-                  {THEMES.map(t => (
-                    <ThemeCard
-                      key={t.id}
-                      theme={t}
-                      selected={selectedTheme === t.id}
-                      onClick={() => handleThemeChange(t.id)}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
           {/* Refresh */}
           <button
             onClick={fetchJob}
