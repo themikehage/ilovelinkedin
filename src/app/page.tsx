@@ -424,6 +424,7 @@ export default function HomePage() {
   const [userUuid, setUserUuid] = useState('');
   const [showcasePortfolios, setShowcasePortfolios] = useState<ShowcasePortfolio[]>([]);
   const [isLoadingShowcase, setIsLoadingShowcase] = useState(true);
+  const [displayCount, setDisplayCount] = useState(9);
   const pollingRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -612,7 +613,7 @@ export default function HomePage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {showcasePortfolios.slice(0, 9).map((portfolio, i) => (
+              {showcasePortfolios.slice(0, displayCount).map((portfolio, i) => (
                 <div key={portfolio.id} style={{ animationDelay: `${i * 0.08}s` }} className="animate-fade-up">
                   <ShowcaseCard portfolio={portfolio} />
                 </div>
@@ -620,11 +621,17 @@ export default function HomePage() {
             </div>
           )}
 
-          {showcasePortfolios.length > 9 && (
+          {showcasePortfolios.length > displayCount && (
             <div className="text-center mt-8">
-              <p className="text-sm text-[var(--secondary)] font-sans">
-                Showing 9 of {showcasePortfolios.length} portfolios
-              </p>
+              <button
+                onClick={() => setDisplayCount(prev => Math.min(prev + 9, showcasePortfolios.length))}
+                className="btn-secondary px-8 py-3"
+              >
+                Load More
+                <span className="ml-2 text-[var(--secondary)] text-sm font-sans">
+                  ({Math.min(displayCount + 9, showcasePortfolios.length)} of {showcasePortfolios.length})
+                </span>
+              </button>
             </div>
           )}
         </div>
