@@ -25,6 +25,7 @@ model Job {
   assignedAgent   String?   @map("assigned_agent")
   lockedAt        DateTime? @map("locked_at")
   lockTtlSeconds  Int       @default(300) @map("lock_ttl_seconds")
+  screenshotUrl   String?   @map("screenshot_url")
 
   @@index([userUuid])
   @@index([status])

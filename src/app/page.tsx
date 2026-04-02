@@ -86,7 +86,20 @@ function PortfolioCard({ job, onCopy, onRefresh }: { job: Job; onCopy: (url: str
 
   return (
     <Link href={`/portfolio/${job.id}`} className="block group">
-      <div className="card-surface p-6 h-full flex flex-col">
+      <div className="card-surface p-0 h-full flex flex-col overflow-hidden rounded-2xl">
+        {/* Screenshot thumbnail */}
+        {job.screenshotUrl ? (
+          <div className="relative overflow-hidden rounded-t-2xl" style={{ height: '140px' }}>
+            <img
+              src={job.screenshotUrl}
+              alt={`${scrapedName || 'Portfolio'} preview`}
+              className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+          </div>
+        ) : null}
+
+        <div className="p-5 flex flex-col flex-1">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
             <div
@@ -212,6 +225,7 @@ function PortfolioCard({ job, onCopy, onRefresh }: { job: Job; onCopy: (url: str
             )}
           </div>
         </div>
+        </div>
       </div>
     </Link>
   );
@@ -248,6 +262,7 @@ interface ShowcasePortfolio {
   deployedUrl: string;
   createdAt: string;
   scrapedData: Record<string, unknown> | null;
+  screenshotUrl: string | null;
 }
 
 function ShowcaseCard({ portfolio }: { portfolio: ShowcasePortfolio }) {
@@ -264,13 +279,13 @@ function ShowcaseCard({ portfolio }: { portfolio: ShowcasePortfolio }) {
       className="group block showcase-card rounded-2xl overflow-hidden"
     >
       <div
-        className="shadow-md hover:shadow-2xl transition-shadow duration-500"
+        className="shadow-md hover:shadow-2xl transition-shadow duration-500 overflow-hidden"
         style={{
           background: `linear-gradient(145deg, ${theme?.colors.primary || '#1C1C1E'} 0%, ${theme?.colors.primary || '#1C1C1E'}dd 100%)`
         }}
       >
         {/* Browser chrome */}
-        <div className="px-4 py-3 flex items-center gap-2 bg-black/15">
+        <div className="px-4 py-3 flex items-center gap-2 bg-black/15 relative z-10">
           <div className="flex gap-1.5">
             <div className="w-3 h-3 rounded-full bg-white/20" />
             <div className="w-3 h-3 rounded-full bg-white/15" />
@@ -283,28 +298,53 @@ function ShowcaseCard({ portfolio }: { portfolio: ShowcasePortfolio }) {
           </div>
         </div>
 
-        <div className="p-5">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-11 h-11 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
-              <LinkedinIcon className="w-5 h-5 text-white" />
+        {/* Screenshot or gradient fallback */}
+        {portfolio.screenshotUrl ? (
+          <div className="relative overflow-hidden" style={{ height: '160px' }}>
+            <img
+              src={portfolio.screenshotUrl}
+              alt={`${name} portfolio preview`}
+              className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+          </div>
+        ) : (
+          <div className="p-5">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-11 h-11 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+                <LinkedinIcon className="w-5 h-5 text-white" />
+              </div>
+              <div className="min-w-0">
+                <p className="font-display font-semibold text-white text-base leading-tight truncate">{name}</p>
+                <p className="text-white/60 text-xs font-sans truncate">{headline}</p>
+              </div>
             </div>
-            <div className="min-w-0">
-              <p className="font-display font-semibold text-white text-base leading-tight truncate">{name}</p>
-              <p className="text-white/60 text-xs font-sans truncate">{headline}</p>
+            <div className="flex flex-wrap gap-2 mb-3">
+              <div className="px-3 py-1 rounded-full bg-white/10 text-white/80 text-xs backdrop-blur-sm font-sans">
+                {theme?.name}
+              </div>
+            </div>
+            <div className="flex items-center gap-2 text-white/40 text-xs">
+              <ExternalLink className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="font-mono truncate">{displayUrl}</span>
             </div>
           </div>
+        )}
 
-          <div className="flex flex-wrap gap-2 mb-3">
-            <div className="px-3 py-1 rounded-full bg-white/10 text-white/80 text-xs backdrop-blur-sm font-sans">
-              {theme?.name}
+        {/* Footer with name + theme pill when screenshot is shown */}
+        {portfolio.screenshotUrl && (
+          <div className="p-4">
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <p className="font-display font-semibold text-white text-sm leading-tight truncate">{name}</p>
+                <p className="text-white/60 text-xs font-sans truncate">{headline}</p>
+              </div>
+              <div className="px-3 py-1 rounded-full bg-white/10 text-white/80 text-xs backdrop-blur-sm font-sans flex-shrink-0">
+                {theme?.name}
+              </div>
             </div>
           </div>
-
-          <div className="flex items-center gap-2 text-white/40 text-xs">
-            <ExternalLink className="w-3.5 h-3.5 flex-shrink-0" />
-            <span className="font-mono truncate">{displayUrl}</span>
-          </div>
-        </div>
+        )}
 
         {/* Hover overlay */}
         <div className="absolute inset-0 bg-[#C8963E]/0 group-hover:bg-[#C8963E]/8 transition-all duration-500 flex items-center justify-center rounded-2xl">

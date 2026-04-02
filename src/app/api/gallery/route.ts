@@ -16,6 +16,7 @@ export async function GET() {
         deployedUrl: true,
         createdAt: true,
         scrapedData: true,
+        screenshotUrl: true,
       },
       orderBy: { createdAt: 'desc' },
       take: 50, // Limit to 50 most recent

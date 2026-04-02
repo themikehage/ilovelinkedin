@@ -297,6 +297,57 @@ export default function PortfolioDetailPage() {
           </button>
         </div>
 
+        {/* Live Preview */}
+        {job.status === 'DONE' && job.deployedUrl && (
+          <div className="mb-8 animate-fade-up" style={{ animationDelay: '0.15s' }}>
+            {job.screenshotUrl ? (
+              <div className="rounded-2xl overflow-hidden shadow-lg border border-[var(--border)]">
+                {/* Browser chrome */}
+                <div className="px-4 py-3 flex items-center gap-2 bg-[#F5F5F5] border-b border-[var(--border)]">
+                  <div className="flex gap-1.5">
+                    <div className="w-3 h-3 rounded-full bg-[#FF5F57]" />
+                    <div className="w-3 h-3 rounded-full bg-[#FFBD2E]" />
+                    <div className="w-3 h-3 rounded-full bg-[#28CA41]" />
+                  </div>
+                  <div className="flex-1 mx-3">
+                    <div className="bg-white rounded-md px-3 py-1 text-xs text-[var(--text-secondary)] font-mono truncate border border-[var(--border)]">
+                      {job.deployedUrl}
+                    </div>
+                  </div>
+                  <a
+                    href={job.deployedUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--accent)] text-white text-xs font-semibold hover:opacity-90 transition-opacity"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    View Live
+                  </a>
+                </div>
+                {/* Screenshot */}
+                <div className="relative overflow-hidden bg-[#1C1C1E]" style={{ maxHeight: '420px' }}>
+                  <img
+                    src={job.screenshotUrl}
+                    alt="Portfolio live preview"
+                    className="w-full object-cover"
+                    style={{ maxHeight: '420px' }}
+                  />
+                </div>
+              </div>
+            ) : (
+              <a
+                href={job.deployedUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-3 rounded-2xl py-16 border-2 border-dashed border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
+              >
+                <ExternalLink className="w-5 h-5" />
+                <span className="font-medium">View Live Portfolio</span>
+              </a>
+            )}
+          </div>
+        )}
+
         {/* Scraped Data */}
         {scrapedData && Object.keys(scrapedData).length > 0 && (
           <div className="space-y-6 animate-fade-up" style={{ animationDelay: '0.2s' }}>

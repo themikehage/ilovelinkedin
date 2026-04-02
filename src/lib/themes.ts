@@ -714,6 +714,7 @@ export interface Job {
   scrapedData: Record<string, unknown> | null;
   githubRepoUrl: string | null;
   deployedUrl: string | null;
+  screenshotUrl: string | null;
   errorMessage: string | null;
   createdAt: string;
   updatedAt: string;
