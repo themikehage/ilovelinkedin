@@ -378,8 +378,8 @@ export default function CreatePage() {
                   className="mt-0.5 w-4 h-4 rounded border-[#E8E4DE] text-[#C8963E] focus:ring-[#C8963E] cursor-pointer flex-shrink-0"
                 />
                 <span className="text-xs text-[var(--secondary)] font-sans leading-relaxed">
-                  Declaro que esta URL de LinkedIn es mi propio perfil y tengo derecho a generar un portfolio con esta información. Acepto los{' '}
-                  <a href="/tos" target="_blank" className="underline hover:text-[#C8963E]">términos del servicio</a>.
+                  I confirm that this LinkedIn URL is my own profile and I have the right to generate a portfolio using this information. I agree to the{' '}
+                  <a href="/tos" target="_blank" className="underline hover:text-[#C8963E]">terms of service</a>.
                 </span>
               </label>
             </div>

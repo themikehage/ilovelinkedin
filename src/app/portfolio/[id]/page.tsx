@@ -457,7 +457,7 @@ export default function PortfolioDetailPage() {
       <div className="mt-12 pt-8 border-t border-[var(--border)]">
         <div className="rounded-2xl p-5 bg-[var(--bg)] border border-[var(--border)]">
           <p className="text-xs text-[var(--text-secondary)] font-sans leading-relaxed">
-            ⚠️ Este portfolio fue generado a partir de información públicamente disponible en LinkedIn. No está afiliado, avalado ni patrocinado por LinkedIn Corporation. Si eres el titular del perfil y no autorizaste su uso, puedes solicitar su retirada escribiendo a{' '}
+            ⚠️ This portfolio was generated from publicly available information on LinkedIn. It is not affiliated with, endorsed by, or sponsored by LinkedIn Corporation. If you are the profile owner and did not authorize its use, you may request removal by writing to{' '}
             <a href="mailto:contacto@therry.dev" className="underline hover:text-[var(--accent)]">
               contacto@therry.dev
             </a>
