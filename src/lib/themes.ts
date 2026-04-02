@@ -722,8 +722,8 @@ export interface Job {
 
 export const STATUS_CONFIG: Record<JobStatus, { label: string; color: string; bg: string; icon: string }> = {
   PENDING_SCRAPE: { label: 'Queued', color: '#6B7280', bg: '#F3F4F6', icon: 'Clock' },
-  SCRAPING: { label: 'Scraping', color: '#2563EB', bg: '#EFF6FF', icon: 'Loader' },
-  SCRAPED: { label: 'Scraped', color: '#0891B2', bg: '#ECFEFF', icon: 'Check' },
+  SCRAPING: { label: 'Fetching', color: '#2563EB', bg: '#EFF6FF', icon: 'Loader' },
+  SCRAPED: { label: 'Retrieved', color: '#0891B2', bg: '#ECFEFF', icon: 'Check' },
   PENDING_BUILD: { label: 'Queued Build', color: '#7C3AED', bg: '#F5F3FF', icon: 'Clock' },
   BUILDING: { label: 'Building', color: '#7C3AED', bg: '#F5F3FF', icon: 'Sparkles' },
   DEPLOYING: { label: 'Deploying', color: '#C8963E', bg: '#FFFBEB', icon: 'Rocket' },

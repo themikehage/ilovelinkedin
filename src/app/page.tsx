@@ -42,8 +42,8 @@ function getOrCreateUserUuid(): string {
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { color: string; bg: string; label: string }> = {
     PENDING_SCRAPE: { label: 'Queued', color: '#6B7280', bg: '#F3F4F6' },
-    SCRAPING: { label: 'Scraping', color: '#2563EB', bg: '#EFF6FF' },
-    SCRAPED: { label: 'Scraped', color: '#0891B2', bg: '#ECFEFF' },
+    SCRAPING: { label: 'Fetching', color: '#2563EB', bg: '#EFF6FF' },
+    SCRAPED: { label: 'Retrieved', color: '#0891B2', bg: '#ECFEFF' },
     PENDING_BUILD: { label: 'Queued Build', color: '#7C3AED', bg: '#F5F3FF' },
     BUILDING: { label: 'Building', color: '#7C3AED', bg: '#F5F3FF' },
     DEPLOYING: { label: 'Deploying', color: '#C8963E', bg: '#FFFBEB' },

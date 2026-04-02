@@ -26,7 +26,7 @@ function LinkedinIcon({ className = '' }: { className?: string }) {
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { label: string; color: string; bg: string }> = {
     PENDING: { label: 'Pending', color: '#6B6B6B', bg: '#F5F5F5' },
-    SCRAPING: { label: 'Scraping', color: '#2563EB', bg: '#EFF6FF' },
+    SCRAPING: { label: 'Fetching', color: '#2563EB', bg: '#EFF6FF' },
     BUILDING: { label: 'Building', color: '#7C3AED', bg: '#F5F3FF' },
     DEPLOYING: { label: 'Deploying', color: '#C8963E', bg: '#FFFBEB' },
     EVALUATING: { label: 'Evaluating', color: '#0891B2', bg: '#ECFEFF' },
@@ -348,7 +348,7 @@ export default function PortfolioDetailPage() {
           </div>
         )}
 
-        {/* Scraped Data */}
+        {/* Profile Data */}
         {scrapedData && Object.keys(scrapedData).length > 0 && (
           <div className="space-y-6 animate-fade-up" style={{ animationDelay: '0.2s' }}>
             {skills.length > 0 && (
