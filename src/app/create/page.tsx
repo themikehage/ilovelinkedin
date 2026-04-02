@@ -86,6 +86,7 @@ export default function CreatePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [userUuid, setUserUuid] = useState('');
+  const [consentChecked, setConsentChecked] = useState(false);
 
   useEffect(() => {
     setUserUuid(getOrCreateUserUuid());
@@ -243,7 +244,7 @@ export default function CreatePage() {
               Enter your LinkedIn URL
             </h1>
             <p className="text-[var(--secondary)] mb-10 font-sans text-base md:text-lg leading-relaxed max-w-xl">
-              We&apos;ll scrape your profile data and transform it into a stunning portfolio page.
+              We'll retrieve your publicly available profile information and transform it into a stunning portfolio page.
             </p>
 
             <div className="mb-8">
@@ -367,6 +368,22 @@ export default function CreatePage() {
               </div>
             )}
 
+            {/* Consent gate */}
+            <div className="mb-6 p-4 rounded-xl border border-[#E8E4DE] bg-white">
+              <label className="flex items-start gap-3 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={consentChecked}
+                  onChange={(e) => setConsentChecked(e.target.checked)}
+                  className="mt-0.5 w-4 h-4 rounded border-[#E8E4DE] text-[#C8963E] focus:ring-[#C8963E] cursor-pointer flex-shrink-0"
+                />
+                <span className="text-xs text-[var(--secondary)] font-sans leading-relaxed">
+                  Declaro que esta URL de LinkedIn es mi propio perfil y tengo derecho a generar un portfolio con esta información. Acepto los{' '}
+                  <a href="/tos" target="_blank" className="underline hover:text-[#C8963E]">términos del servicio</a>.
+                </span>
+              </label>
+            </div>
+
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setStep(1)}
@@ -377,7 +394,7 @@ export default function CreatePage() {
               </button>
               <button
                 onClick={handleSubmit}
-                disabled={isSubmitting}
+                disabled={isSubmitting || !consentChecked}
                 className="btn-primary flex-1 text-base py-4 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
