@@ -1,22 +1,19 @@
 'use client';
 
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
-import { Job, THEMES, MAX_PORTFOLIOS_PER_USER } from '@/lib/types';
+import { Job, THEMES } from '@/lib/types';
 import {
-  Plus,
   Loader2,
   Check,
   X,
   ExternalLink,
   Copy,
-  RefreshCw,
-  Sparkle,
-  AlertCircle,
   Grid3X3,
   ArrowRight,
   Star,
-  ChevronRight,
+  Sparkle,
+  AlertCircle,
 } from 'lucide-react';
 
 // LinkedIn SVG Icon
@@ -65,10 +62,9 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
-// ─── Portfolio Card ─────────────────────────────────────────────────────────
+// ─── Portfolio Card ──────────────────────────────────────────────────────────
 
-function PortfolioCard({ job, onCopy, onRefresh }: { job: Job; onCopy: (url: string) => void; onRefresh: () => void }) {
-  const isTerminal = job.status === 'DONE' || job.status === 'FAILED';
+function PortfolioCard({ job, onCopy }: { job: Job; onCopy: (url: string) => void }) {
   const theme = THEMES.find(t => t.id === job.theme);
   const createdDate = new Date(job.createdAt).toLocaleDateString('en-US', {
     month: 'short',
@@ -202,25 +198,10 @@ function PortfolioCard({ job, onCopy, onRefresh }: { job: Job; onCopy: (url: str
                 </button>
               </>
             )}
-            {job.status === 'FAILED' && (
-              <button
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); onRefresh(); }}
-                className="btn-secondary flex-1 !py-2 !px-4 text-sm font-sans"
-              >
-                <RefreshCw className="w-4 h-4" />
-                Retry
-              </button>
-            )}
-            {!isTerminal && (
-              <div className="flex-1 flex items-center gap-2">
-                <Loader2 className="w-4 h-4 animate-spin text-[#C8963E]" />
-                <span className="text-sm text-[var(--secondary)] font-sans">Building...</span>
-              </div>
-            )}
             {job.status === 'DONE' && (
               <span className="text-xs text-[var(--secondary)] flex items-center gap-1 font-sans ml-auto">
                 Details
-                <ChevronRight className="w-3 h-3" />
+                <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
               </span>
             )}
           </div>
@@ -242,13 +223,9 @@ function EmptyState() {
       <h3 className="font-display text-3xl text-[var(--foreground)] mb-3 italic">
         No portfolios yet
       </h3>
-      <p className="text-[var(--secondary)] max-w-sm mx-auto mb-10 font-sans text-base leading-relaxed">
-        Connect your LinkedIn profile and we&apos;ll transform it into a stunning portfolio page.
+      <p className="text-[var(--secondary)] max-w-sm mx-auto font-sans text-base leading-relaxed">
+        This platform is currently in read-only mode. New portfolio creation is disabled.
       </p>
-      <Link href="/create" className="btn-primary text-base px-8 py-4">
-        <Plus className="w-5 h-5" />
-        Create Your First Portfolio
-      </Link>
     </div>
   );
 }
@@ -360,7 +337,7 @@ function ShowcaseCard({ portfolio }: { portfolio: ShowcasePortfolio }) {
 
 // ─── Header ─────────────────────────────────────────────────────────────────
 
-function Header({ atLimit }: { atLimit: boolean }) {
+function Header() {
   return (
     <header className="border-b border-[#E8E4DE] bg-white/70 backdrop-blur-xl sticky top-0 z-40">
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -379,14 +356,6 @@ function Header({ atLimit }: { atLimit: boolean }) {
             <Grid3X3 className="w-4 h-4" />
             <span className="hidden sm:inline">Showcase</span>
           </a>
-          <Link
-            href="/create"
-            className={`${atLimit ? 'btn-secondary opacity-50 cursor-not-allowed pointer-events-none' : 'btn-primary'}`}
-            title={atLimit ? `Maximum of ${MAX_PORTFOLIOS_PER_USER} portfolios reached` : 'Create new portfolio'}
-          >
-            <Plus className="w-5 h-5" />
-            <span className="hidden sm:inline">Create Portfolio</span>
-          </Link>
         </div>
       </div>
     </header>
@@ -428,15 +397,11 @@ function Hero() {
 
           {/* Subtext */}
           <p className="text-lg md:text-xl text-[var(--secondary)] max-w-xl mb-10 font-sans leading-relaxed animate-fade-up animate-stagger-2">
-            Paste your LinkedIn URL, pick a theme, and get a beautiful portfolio page in minutes. Free, fast, impressive.
+            Browse the showcase below to see portfolios created from LinkedIn profiles.
           </p>
 
-          {/* CTAs */}
+          {/* CTA */}
           <div className="flex flex-wrap items-center gap-4 animate-fade-up animate-stagger-3">
-            <Link href="/create" className="btn-primary text-base px-8 py-4 shadow-glow">
-              <Sparkle className="w-5 h-5" />
-              Create Your Portfolio — Free
-            </Link>
             <a
               href="#showcase"
               className="inline-flex items-center gap-2 text-[var(--secondary)] hover:text-[var(--foreground)] font-sans font-medium transition-colors duration-200 group"
@@ -465,7 +430,6 @@ export default function HomePage() {
   const [showcasePortfolios, setShowcasePortfolios] = useState<ShowcasePortfolio[]>([]);
   const [isLoadingShowcase, setIsLoadingShowcase] = useState(true);
   const [displayCount, setDisplayCount] = useState(9);
-  const pollingRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     setUserUuid(getOrCreateUserUuid());
@@ -502,20 +466,6 @@ export default function HomePage() {
       .catch(() => setIsLoadingShowcase(false));
   }, []);
 
-  useEffect(() => {
-    if (jobs.length === 0) return;
-    const activeJobs = jobs.filter(j => !['DONE', 'FAILED'].includes(j.status));
-    if (activeJobs.length === 0) return;
-
-    pollingRef.current = setInterval(() => {
-      fetchJobs();
-    }, 5000);
-
-    return () => {
-      if (pollingRef.current) clearInterval(pollingRef.current);
-    };
-  }, [jobs, fetchJobs]);
-
   const handleCopy = async (url: string) => {
     try {
       await navigator.clipboard.writeText(url);
@@ -524,13 +474,11 @@ export default function HomePage() {
     }
   };
 
-  const activeCount = jobs.filter(j => !['DONE', 'FAILED'].includes(j.status)).length;
   const doneCount = jobs.filter(j => j.status === 'DONE').length;
-  const atLimit = jobs.length >= MAX_PORTFOLIOS_PER_USER;
 
   return (
     <main className="min-h-screen">
-      <Header atLimit={atLimit} />
+      <Header />
       <Hero />
 
       {/* Portfolios Section */}
@@ -542,12 +490,6 @@ export default function HomePage() {
           </div>
           {jobs.length > 0 && (
             <div className="flex items-center gap-5 text-sm font-sans">
-              {activeCount > 0 && (
-                <span className="flex items-center gap-1.5 text-[#C8963E]">
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  {activeCount} building
-                </span>
-              )}
               {doneCount > 0 && (
                 <span className="flex items-center gap-1.5 text-[#4A7C59]">
                   <Check className="w-4 h-4" />
@@ -555,7 +497,7 @@ export default function HomePage() {
                 </span>
               )}
               <span className="text-[var(--secondary)] tabular-nums">
-                {jobs.length}/{MAX_PORTFOLIOS_PER_USER}
+                {jobs.length}
               </span>
             </div>
           )}
@@ -589,27 +531,9 @@ export default function HomePage() {
                 <PortfolioCard
                   job={job}
                   onCopy={handleCopy}
-                  onRefresh={fetchJobs}
                 />
               </div>
             ))}
-
-            {!atLimit && (
-              <Link
-                href="/create"
-                className="card-surface p-6 flex flex-col items-center justify-center gap-4 text-center min-h-[220px] border-dashed border-2 border-[#E8E4DE] hover:border-[#C8963E] cursor-pointer group animate-fade-up"
-                style={{ animationDelay: `${jobs.length * 0.08}s` }}
-              >
-                <div className="w-14 h-14 rounded-2xl bg-[#FAF8F5] flex items-center justify-center group-hover:bg-[#C8963E]/10 transition-colors duration-300">
-                  <Plus className="w-7 h-7 text-[var(--secondary)] group-hover:text-[#C8963E] transition-colors duration-300" />
-                </div>
-                <div>
-                  <p className="font-display font-semibold text-lg text-[var(--foreground)] italic">Create another</p>
-                  <p className="text-sm text-[var(--secondary)] font-sans mt-1">Add another portfolio</p>
-                </div>
-                <ArrowRight className="w-5 h-5 text-[var(--secondary)] group-hover:text-[#C8963E] group-hover:translate-x-1 transition-all duration-300" />
-              </Link>
-            )}
           </div>
         )}
       </section>
@@ -633,7 +557,7 @@ export default function HomePage() {
               are building
             </h2>
             <p className="text-[var(--secondary)] max-w-lg mx-auto font-sans text-base md:text-lg leading-relaxed">
-              Real portfolios created from LinkedIn profiles. Get inspired and create yours.
+              Real portfolios created from LinkedIn profiles. Get inspired.
             </p>
           </div>
 
@@ -646,10 +570,7 @@ export default function HomePage() {
           ) : showcasePortfolios.length === 0 ? (
             <div className="text-center py-16 animate-fade-up">
               <Grid3X3 className="w-12 h-12 text-[var(--secondary)] mx-auto mb-4 opacity-40" />
-              <p className="text-[var(--secondary)] font-sans">No portfolios in the showcase yet. Be the first!</p>
-              <Link href="/create" className="btn-primary mt-6">
-                Create Your Portfolio
-              </Link>
+              <p className="text-[var(--secondary)] font-sans">No portfolios in the showcase yet.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -677,7 +598,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA Footer */}
+      {/* Footer */}
       <section className="py-20 md:py-28 text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-[#FAF8F5] to-[#F5F0E8]" aria-hidden="true" />
         <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-[#C8963E]/5 blur-3xl" aria-hidden="true" />
@@ -685,18 +606,14 @@ export default function HomePage() {
         <div className="relative max-w-6xl mx-auto px-6">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#C8963E]/8 text-[#C8963E] text-sm font-sans font-medium mb-6 animate-fade-up">
             <Sparkle className="w-4 h-4" />
-            Limited only by your imagination
+            Read-only mode
           </div>
           <h3 className="font-display text-4xl md:text-5xl lg:text-6xl italic text-[var(--foreground)] mb-5 animate-fade-up animate-stagger-1 leading-tight">
-            Ready to stand out?
+            Still worth browsing
           </h3>
           <p className="text-[var(--secondary)] mb-10 font-sans text-base md:text-lg max-w-md mx-auto leading-relaxed animate-fade-up animate-stagger-2">
-            Create your portfolio in under 2 minutes. It&apos;s free, fast, and genuinely impressive.
+            Browse the showcase above. The platform is read-only but the portfolios are real.
           </p>
-          <Link href="/create" className="btn-primary text-lg px-10 py-4 shadow-glow animate-fade-up animate-stagger-3">
-            <Sparkle className="w-5 h-5" />
-            Get Started — It&apos;s Free
-          </Link>
         </div>
       </section>
     </main>

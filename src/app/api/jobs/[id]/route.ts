@@ -37,72 +37,18 @@ export async function GET(
   }
 }
 
-// PATCH /api/jobs/[id] - Update a job (theme)
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const userUuid = getUserUuid(request);
-  const { id } = await params;
-
-  if (!userUuid) {
-    return NextResponse.json({ error: 'Missing x-user-uuid header' }, { status: 401 });
-  }
-
-  try {
-    const body = await request.json();
-    const { theme } = body;
-
-    const job = await db.job.findUnique({ where: { id } });
-
-    if (!job) {
-      return NextResponse.json({ error: 'Job not found' }, { status: 404 });
-    }
-
-    if (job.userUuid !== userUuid) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
-    }
-
-    const updated = await db.job.update({
-      where: { id },
-      data: { theme },
-    });
-
-    return NextResponse.json({ job: updated });
-  } catch (error) {
-    console.error('PATCH /api/jobs/[id] error:', error);
-    return NextResponse.json({ error: 'Database error' }, { status: 500 });
-  }
+// PATCH /api/jobs/[id] - Disabled (read-only mode)
+export async function PATCH() {
+  return NextResponse.json(
+    { error: 'This endpoint is disabled. The platform is in read-only mode.' },
+    { status: 403 }
+  );
 }
 
-// DELETE /api/jobs/[id] - Delete a job
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const userUuid = getUserUuid(request);
-  const { id } = await params;
-
-  if (!userUuid) {
-    return NextResponse.json({ error: 'Missing x-user-uuid header' }, { status: 401 });
-  }
-
-  try {
-    const job = await db.job.findUnique({ where: { id } });
-
-    if (!job) {
-      return NextResponse.json({ error: 'Job not found' }, { status: 404 });
-    }
-
-    if (job.userUuid !== userUuid) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
-    }
-
-    await db.job.delete({ where: { id } });
-
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error('DELETE /api/jobs/[id] error:', error);
-    return NextResponse.json({ error: 'Database error' }, { status: 500 });
-  }
+// DELETE /api/jobs/[id] - Disabled (read-only mode)
+export async function DELETE() {
+  return NextResponse.json(
+    { error: 'This endpoint is disabled. The platform is in read-only mode.' },
+    { status: 403 }
+  );
 }
